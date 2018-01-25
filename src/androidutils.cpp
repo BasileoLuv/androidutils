@@ -1,6 +1,8 @@
 #include "androidutils.h"
 #include "androidutils_p.h"
 
+#include <QtAndroid>
+
 #define LENGTH_SHORT 0x00000000
 #define LENGTH_LONG 0x00000001
 #define FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS 0x80000000
@@ -33,8 +35,19 @@ QColor AndroidUtils::statusBarColor()
 
 void AndroidUtils::setStatusBarColor(const QColor &color)
 {
+    if (QtAndroid::androidSdkVersion() < 21)
+        return;
+
+    QtAndroid::runOnAndroidThread([=]() {
+       auto window = QtAndroid::androidActivity().callObjectMethod("getWindow", "()Landroid/view/Window;");
+
+       window.callMethod<void>("clearFlags", "(I)V", FLAG_TRANSLUCENT_STATUS);
+       window.callMethod<void>("addFlags", "(I)V", FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+       window.callMethod<void>("setStatusBarColor", "(I)V", color.rgba());
+    });
+
     AndroidUtilsPrivate::statusBarColor = color;
-    AndroidUtilsPrivate::changeStatusBarColor(color);
 }
 
 void AndroidUtils::sharePlainText(const QString &text, const QString &title)
@@ -56,6 +69,16 @@ void AndroidUtils::sharePlainText(const QString &text, const QString &title)
     });
 }
 
+bool AndroidUtils::statusBarColorAvailable()
+{
+    return QtAndroid::androidSdkVersion() >= 21;
+}
+
+bool AndroidUtils::available()
+{
+    return true;
+}
+
 void AndroidUtilsPrivate::showToastMessage(const QString &text, int duration)
 {
     if (duration != LENGTH_SHORT and duration != LENGTH_LONG)
@@ -70,20 +93,5 @@ void AndroidUtilsPrivate::showToastMessage(const QString &text, int duration)
                                                                "Landroid/widget/Toast;",
                                                                context.object(), TO_JSTRING(text), duration);
         toast.callMethod<void>("show");
-    });
-}
-
-void AndroidUtilsPrivate::changeStatusBarColor(const QColor &color)
-{
-    if (QtAndroid::androidSdkVersion() < 21)
-        return;
-
-    QtAndroid::runOnAndroidThread([=]() {
-       auto window = QtAndroid::androidActivity().callObjectMethod("getWindow", "()Landroid/view/Window;");
-
-       window.callMethod<void>("clearFlags", "(I)V", FLAG_TRANSLUCENT_STATUS);
-       window.callMethod<void>("addFlags", "(I)V", FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-       window.callMethod<void>("setStatusBarColor", "(I)V", color.rgba());
     });
 }

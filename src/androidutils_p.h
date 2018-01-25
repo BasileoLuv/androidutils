@@ -7,7 +7,6 @@ class AndroidUtilsPrivate
 {
 public:
     static void showToastMessage(const QString &text, int duration);
-    static void changeStatusBarColor(const QColor &color);
 
     static QColor statusBarColor;
 };

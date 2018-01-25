@@ -1,8 +1,11 @@
-QT += androidextras
 INCLUDEPATH += $$PWD
 CONFIG += c++17
 
-SOURCES += $$PWD/androidutils.cpp
+HEADERS += $$PWD/androidutils.h
 
-HEADERS += $$PWD/androidutils.h \
-           $$PWD/androidutils_p.h
+android {
+    QT += androidextras
+    SOURCES += $$PWD/androidutils.cpp
+} else {
+    SOURCES += $$PWD/androidutils_empty.cpp
+}

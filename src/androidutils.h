@@ -3,12 +3,13 @@
 
 #include <QObject>
 #include <QColor>
-#include <QtAndroid>
 
 class AndroidUtils : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QColor statusBarColor READ statusBarColor WRITE setStatusBarColor)
+    Q_PROPERTY(bool statusBarColorAvailable READ statusBarColorAvailable CONSTANT)
+    Q_PROPERTY(bool available READ available CONSTANT)
 public:
     explicit AndroidUtils(QObject *parent = nullptr);
 
@@ -20,6 +21,8 @@ public:
 
     Q_INVOKABLE static void sharePlainText(const QString &text, const QString &title = "Share");
 
+    static bool statusBarColorAvailable();
+    static bool available();
 };
 
 #endif // ANDROIDUTILS_H
