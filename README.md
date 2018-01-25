@@ -6,6 +6,7 @@ AndroidUtils is a small Qt library that can ease Android app development in QML
 * Display toast popups (text only)
 * Invoke "Share" menu (text only)
 
+TODO: DP to Pixel conversion?
 TODO: maybe some other stuff
 
 ## Integration
@@ -31,7 +32,7 @@ import AndroidUtils 1.0
 AndroidUtils {
     id: util
 
-    // Set status bar color:
+    // Set status bar color
     statusBarColor: Material.color(Material.Green, Material.Shade700)
 }
 
@@ -47,4 +48,15 @@ onClicked: util.showLongToastMessage("Test")
 
 // Share some text to other apps
 onClicked: util.sharePlainText("Text to share", "Dialog title")
+
+...
+
+// Status bar color availability field
+// False if Android Platform is too old or not running on Android
+util.statusBarColorAvailable
+
+// Utils availability field
+// False if not running on Android
+util.available
+
 ```
