@@ -35,6 +35,8 @@ QColor AndroidUtils::statusBarColor()
 
 void AndroidUtils::setStatusBarColor(const QColor &color)
 {
+    AndroidUtilsPrivate::statusBarColor = color;
+
     if (QtAndroid::androidSdkVersion() < 21)
         return;
 
@@ -46,8 +48,6 @@ void AndroidUtils::setStatusBarColor(const QColor &color)
 
        window.callMethod<void>("setStatusBarColor", "(I)V", color.rgba());
     });
-
-    AndroidUtilsPrivate::statusBarColor = color;
 }
 
 void AndroidUtils::sharePlainText(const QString &text, const QString &title)
