@@ -7,6 +7,7 @@ AndroidUtils is a small Qt library that can ease Android app development in QML
 * Invoke "Share" menu (text only)
 
 TODO: DP to Pixel conversion?
+
 TODO: maybe some other stuff
 
 ## Integration
